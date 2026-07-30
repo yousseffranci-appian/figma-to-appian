@@ -58,3 +58,8 @@ footer{padding-left:var(--page-gutter);padding-right:var(--page-gutter)}
 .resource.featured .resource-icon{background:white;border-color:#ffffff55}
 .copy.copied{background:#17834a;border-color:#17834a}
 .copy.failed{background:#b42318;border-color:#b42318}
+.stage-actions{display:grid;gap:12px;margin-top:24px}
+.stage-actions .gem-action{margin-top:0}
+.figma-guide-action{background:white;border-color:var(--line)}
+.figma-guide-action>span{background:white;border:1px solid #dddfea;padding:10px}
+.figma-guide-action>span img{display:block;width:100%;height:100%;object-fit:contain}
