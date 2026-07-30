@@ -47,3 +47,14 @@ footer{padding-left:var(--page-gutter);padding-right:var(--page-gutter)}
 .code.prompt{border-left:4px solid var(--blue);background:#111526}
 .code.prompt .copy{background:var(--blue);border-color:var(--blue)}
 @media(max-width:700px){.system-picker{align-items:flex-start;flex-direction:column}.system-toggle{width:100%}.system-toggle button{min-width:0;flex:1}.prerequisite-grid article{min-height:220px}}
+.resource .resource-icon{display:grid;place-items:center;width:46px;height:46px;padding:10px;background:#f1f1ff;border:1px solid #e1e1f7}
+.resource .resource-icon img{display:block;width:100%;height:100%;object-fit:contain}
+.resource .resource-icon.wide{width:84px;padding:11px 9px}
+.resource .resource-icon.claude{background:#f3e7da}
+.resource .resource-icon.claude img{filter:invert(26%) sepia(13%) saturate(1107%) hue-rotate(337deg) brightness(91%) contrast(88%)}
+.resource .resource-icon.gemini{background:linear-gradient(135deg,#eef4ff,#f7ecff)}
+.resource .resource-icon.gemini img{filter:invert(32%) sepia(87%) saturate(1978%) hue-rotate(223deg) brightness(94%) contrast(96%)}
+.resource .resource-icon.google{background:white}
+.resource.featured .resource-icon{background:white;border-color:#ffffff55}
+.copy.copied{background:#17834a;border-color:#17834a}
+.copy.failed{background:#b42318;border-color:#b42318}

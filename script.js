@@ -657,12 +657,50 @@ function progress(){
   document.querySelector("#progressValue").textContent=(all.length?Math.round(done/all.length*100):0)+"%";
   localStorage.setItem("fta-progress",JSON.stringify(Object.fromEntries(all.map(x=>[x.dataset.key,x.checked]))));
 }
+async function copyText(text){
+  const textarea=document.createElement("textarea");
+  textarea.value=text;
+  textarea.setAttribute("readonly","");
+  textarea.style.cssText="position:fixed;left:-9999px;top:0;opacity:0";
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0,textarea.value.length);
+  let copied=false;
+  try{copied=document.execCommand("copy")}catch(error){copied=false}
+  textarea.remove();
+  if(copied)return true;
+  if(navigator.clipboard&&window.isSecureContext){
+    try{await navigator.clipboard.writeText(text);return true}catch(error){}
+  }
+  return copied;
+}
 function wireCopy(){
   document.querySelectorAll(".copy").forEach(button=>button.onclick=async()=>{
-    await navigator.clipboard.writeText(button.parentElement.querySelector("pre").innerText);
+    const pre=button.closest(".code")?.querySelector("pre");
+    if(!pre)return;
+    const original=button.dataset.label||button.textContent;
+    button.dataset.label=original;
+    const copied=await copyText(pre.innerText);
+    button.dataset.copyStatus=copied?"success":"fallback";
+    button.textContent=copied?"Copied!":"Select and copy";
+    button.classList.toggle("copied",copied);
+    button.classList.toggle("failed",!copied);
+    if(!copied){
+      const selection=window.getSelection();
+      const range=document.createRange();
+      range.selectNodeContents(pre);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
     let toast=document.querySelector("#toast");
+    toast.textContent=copied?"Copied to clipboard":"Copy was blocked — text selected for you";
     toast.classList.add("show");
-    setTimeout(()=>toast.classList.remove("show"),1400);
+    setTimeout(()=>{
+      toast.classList.remove("show");
+      button.textContent=original;
+      button.classList.remove("copied","failed");
+    },1800);
   });
 }
 function wireNav(){
