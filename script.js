@@ -1,11 +1,11 @@
 const stages=[
 ["Discover and brief the journey","Turn real discovery evidence into a consistent, high-impact Figma Make brief before opening design tools.",["Collect discovery notes, client material, and full transcripts","Use the Figma Make Brief Generator Gem","Confirm every persona and business journey","Define the exception path and honest simulations","Reuse the same fictional names, IDs, values, and statuses"],`# Give the Figma Make Brief Generator Gem:\n- discovery transcripts\n- client/prospect materials\n- brand and visual references\n\n# Review the output before moving to Figma Make.`],
-["Install your tools","Prepare a fresh Mac with the command-line tools the workflow needs.",["Install Homebrew if needed","Install Git, Node.js, Python 3.12, uv, and GitHub CLI","Install Claude Code and sign in","Run the health check"],`brew install git node python@3.12 gh\ncurl -LsSf https://astral.sh/uv/install.sh | sh\nnpm install -g @anthropic-ai/claude-code\nclaude doctor`],
+["Install your tools","Prepare a fresh Mac with the command-line tools the workflow needs.",["Install Homebrew if needed","Install Git, Node.js, Python 3.12, uv, and GitHub CLI","Install Claude Code and sign in","Run the health check"],`# 1. Check whether Homebrew is already installed\nbrew --version\n\n# 2. Only if Terminal says \"command not found\", install Homebrew\n/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"\n\n# 3. Run every command shown under Homebrew's \"Next steps\", then verify\nbrew --version\n\n# 4. Install the required development tools\nbrew install git node python@3.12 gh\n\n# 5. Install uv\ncurl -LsSf https://astral.sh/uv/install.sh | sh\n\n# 6. Close Terminal completely, reopen it, then verify every tool\ngit --version\nnode --version\nnpm --version\npython3 --version\nuv --version\ngh --version\n\n# 7. Install Claude Code (do not use sudo)\nnpm install -g @anthropic-ai/claude-code\n\n# 8. Verify and diagnose Claude Code\nclaude --version\nclaude doctor\n\n# 9. Start Claude Code and complete browser authentication\nclaude\n\n# 10. When authentication is complete, leave Claude Code with\n/exit`],
 ["Install both skills","Run this block once. It installs or updates both skills automatically—there is no manual file copying.",["Run the complete installer block","Confirm appian-dev contains SKILL.md and references","Confirm figma-react-to-appian-sail contains SKILL.md","Restart Claude Code so it discovers the skills"],`mkdir -p "$HOME/.claude/skills"\n\nif [ -d "$HOME/.claude/skills/appian/.git" ]; then\n  git -C "$HOME/.claude/skills/appian" pull --ff-only\nelse\n  git clone https://github.com/appian/dev-mcp-skills.git "$HOME/.claude/skills/appian"\nfi\n\nif [ ! -e "$HOME/.claude/skills/appian-dev" ]; then\n  ln -s "$HOME/.claude/skills/appian/skills/appian" "$HOME/.claude/skills/appian-dev"\nfi\n\nmkdir -p "$HOME/.claude/skills/figma-react-to-appian-sail"\ncurl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/SKILL.md" \\\n  -o "$HOME/.claude/skills/figma-react-to-appian-sail/SKILL.md"\n\nls "$HOME/.claude/skills/appian-dev"\nls "$HOME/.claude/skills/figma-react-to-appian-sail"`],
 ["Prepare Appian","Use a sandbox and confirm Developer MCP and Designer access.",["Confirm your Appian version","Enable Developer MCP","Confirm object-creation permission","Create or identify the target application and prefix"],`Application: <APP NAME>\nPrefix: <PREFIX>\nDesigner URL: <APP URL>\nSite: https://<SITE>.appiancloud.com`],
-["Create the workspace","Keep source, evidence, plans, project instructions, MCP configuration, and SAIL backups together.",["Create the parent folder","Create Plans, SAIL, screenshot, and asset folders","Initialize Git","Clone the Figma Make repository","Download and customize CLAUDE.template.md as CLAUDE.md"],`mkdir -p ~/Documents/appian-claude-projects/<PROJECT>\ncd ~/Documents/appian-claude-projects/<PROJECT>\nmkdir -p Plans SAIL-Interfaces screenshots/{source,appian} assets/demo-documents\ngit init\ngh repo clone <OWNER>/<REPO> figma-source\ncp /path/to/CLAUDE.template.md CLAUDE.md`],
-["Connect Appian MCP","Launch Claude from the parent folder, configure the project server, restart, and approve it.",["Start Claude from the parent folder","Load /appian-dev","Configure project-level MCP","Restart and approve appian","Verify /mcp and listApplications"],`cd ~/Documents/appian-claude-projects/<PROJECT>\nclaude\n\n# Inside Claude Code\n/appian-dev\n/mcp`],
-["Run and inspect the source","The rendered Figma Make app is the visual and behavioral authority.",["Install source dependencies","Run the React development server","Check every page and state","Create Plans/source-readiness-report.md","Capture important pages and states","Invoke the translation skill","Complete Phase 1 read-only"],`cd figma-source\nnpm install\nnpm run dev\nnpm run build\n\n# Claude Code from parent\n/figma-react-to-appian-sail ./figma-source`],
+["Create the workspace","Keep source, evidence, plans, project instructions, MCP configuration, and SAIL backups together.",["Create the parent folder","Create Plans, SAIL, screenshot, and asset folders","Initialize Git","Clone the Figma Make repository","Download and customize CLAUDE.template.md as CLAUDE.md"],`# Replace these two values before running anything\nPROJECT_NAME="my-appian-demo"\nGITHUB_REPOSITORY="OWNER/FIGMA-MAKE-REPOSITORY"\n\n# 1. Authenticate GitHub CLI\n# Choose: GitHub.com → HTTPS → Yes → Login with a web browser\ngh auth login\ngh auth status\n\n# 2. Create and enter the parent project folder\nmkdir -p "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"\ncd "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"\n\n# 3. Initialize the local project and evidence folders\ngit init\nmkdir -p Plans SAIL-Interfaces screenshots/source screenshots/appian assets/demo-documents\n\n# 4. Clone the Figma Make repository into the required folder name\ngh repo clone "$GITHUB_REPOSITORY" figma-source\n\n# 5. Confirm the source exists\ngit -C figma-source status\nls -la figma-source\n\n# 6. Download the project-instructions template\ncurl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/CLAUDE.template.md" \\\n  -o CLAUDE.md\n\n# 7. Open CLAUDE.md and replace every [BRACKETED VALUE]\nopen -a TextEdit CLAUDE.md\n\n# 8. Confirm you are still in the parent workspace\npwd\nls -la`],
+["Connect Appian MCP","Launch Claude from the parent folder, configure the project server, restart, and approve it.",["Start Claude from the parent folder","Load /appian-dev","Configure project-level MCP","Restart and approve appian","Verify /mcp and listApplications"],`# 1. Replace the project name, then enter the PARENT workspace\ncd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"\n\n# 2. Start Claude Code from this folder\nclaude\n\n# 3. Inside Claude Code, load the Appian skill\n/appian-dev\n\n# 4. Paste this setup request, replacing the URL\nConfigure the Appian Developer MCP server for this project.\n\nAppian environment:\nhttps://<YOUR-SITE>.appiancloud.com\n\nDo not create, update, or delete any Appian objects.\nInspect the installed Appian skill, follow its official version-matched setup\ninstructions, create the project-level .mcp.json, tell me when official browser\nauthentication is required, and finish with a read-only listApplications test.\n\n# 5. When Claude says approval is pending, exit\n/exit\n\n# 6. In normal Terminal, verify the configuration exists\npwd\nls -la .mcp.json\n\n# 7. Restart from the SAME folder and approve only the appian server\nclaude\n\n# 8. Inside Claude Code, confirm the connection\n/mcp\n/appian-dev\n\n# 9. Paste this final read-only test\nRemain strictly read-only. Call listApplications, confirm the target application\nis visible, and do not call any create, update, add, insert, upload, or delete tool.`],
+["Run and inspect the source","The rendered Figma Make app is the visual and behavioral authority.",["Install source dependencies","Run the React development server","Check every page and state","Create Plans/source-readiness-report.md","Capture important pages and states","Invoke the translation skill","Complete Phase 1 read-only"],`# TERMINAL WINDOW 1 — run the Figma source\ncd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>/figma-source"\n\n# Check package.json and the lockfile before choosing the package manager\nls -la\n\n# For package-lock.json, run\nnpm install\nnpm run build\nnpm run dev\n\n# Keep this window running. Open the Local URL shown by Vite,\n# commonly http://localhost:5173\n\n# TERMINAL WINDOW 2 — start Claude from the PARENT workspace\ncd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"\nclaude\n\n# Inside Claude Code\n/appian-dev\n/figma-react-to-appian-sail ./figma-source\n\n# Paste the complete Source audit prompt from the Prompt library below.\n# Keep Appian read-only until the inventory and plans are approved.`],
 ["Plan the translation","Turn JSX, Tailwind, CSS, routes, and states into measurable SAIL mappings.",["Approve the source inventory","Create the visual specification","Create component and responsive mappings","Create the Appian object plan","Create the test plan"],`Proceed with planning only.\nCreate the inventory, visual specification, mappings,\nobject plan, and test plan. Do not build yet.`],
 ["Build in dependency order","Create native objects, persistence, honest simulations, and a complete Appian Site.",["Create foundations and records","Seed fictional data and documents","Build shared components and screens","Add workflows, actions, and exports","Create the Site","Validate and log every object"],`The plans are approved. Proceed with the complete build.\nWork only in <APP NAME> using <PREFIX>.\nPersist principal actions and validate every object.`],
 ["Converge, test, and hand off","A valid interface is not done until visual and end-to-end testing passes.",["Compare at 1440×900","Compare at 1024×768 and 390×844","Fix critical/high visual differences","Run the full user journey","Verify persistence and recovery","Produce final reports"],`Execute screenshot convergence for every material screen.\nRun the complete journey, fix blocking and high-impact defects,\nand write the final test and build reports.`]
@@ -79,7 +79,161 @@ const stageDetails=[
 ["Finish the evidence trail","Record actual results and evidence in the test report. Fix blocking and functional failures, retest affected paths, then produce the final build report with created/reused objects, simulations, limitations, and manual follow-up."]
 ]
 ];
-const prompts={setup:`/appian-dev\n\nConfigure Appian Developer MCP for https://<SITE>.appiancloud.com. Create the project-level configuration, guide me through official authentication, and finish with a read-only listApplications test. Do not modify Appian objects.`,inspect:`/figma-react-to-appian-sail ./figma-source\n\nTarget: <APP NAME>\nPrefix: <PREFIX>\nDesigner URL: <URL>\nSource: http://localhost:5173\n\nRead CLAUDE.md. Perform Phase 1 only. Inspect the entire repository, build configuration, rendered application, every route/state, responsive behavior, assets, mock services, and existing target application. Write Plans/source-readiness-report.md and the complete source inventory. Capture material source screens. Remain read-only in Appian and stop after reporting the findings.`,plan:`The inventory is approved. Proceed through the visual specification, component mapping, responsive mapping, Appian object plan, and test plan only. Resolve CSS/Tailwind into explicit measurements. Include data, security, integration, asset, demo-data, flow, and implementation-sequence plans. Do not build Appian objects.`,build:`All plans are approved. Build the native Appian application inside <APP NAME> using <PREFIX>. Treat ./figma-source as the visual and behavioral source of truth. Build in dependency order, persist principal actions, simulate unavailable integrations honestly, validate every object, create the Site, and continue unless a skill stop condition is reached.`,test:`Run the complete journey from the Appian Site. Verify navigation, data, calculations, uploads, workflows, approvals, edits, history, exports, persistence, recovery, accessibility, and responsive layouts. Perform screenshot convergence, fix blocking/high defects, and produce final reports.`};
+const prompts={
+setup:`/appian-dev
+
+Configure the Appian Developer MCP server for this project.
+
+Appian environment:
+https://<YOUR-SITE>.appiancloud.com
+
+Appian version:
+<VERSION>
+
+Do not create, update, or delete Appian objects.
+
+1. Confirm the current folder is the parent project workspace.
+2. Read CLAUDE.md and the installed Appian skill.
+3. Follow the official version-matched Developer MCP setup instructions.
+4. Verify Git, Python, uv, Node.js, and Claude Code.
+5. Create the project-level .mcp.json.
+6. Tell me exactly when official browser authentication is required.
+7. Do not request or store my normal Appian password.
+8. Finish with a read-only listApplications call.
+9. Confirm the target application is visible.
+10. Report the connected site, authenticated user when available, and loaded tools.`,
+inspect:`Use the installed Figma-to-Appian translation skill and /appian-dev.
+
+This is an inspection-and-planning phase only.
+Do not create, update, or delete any Appian object.
+
+TARGET
+- Application: <APPLICATION NAME>
+- Prefix: <PREFIX>
+- Appian environment: https://<SITE>.appiancloud.com
+- Appian version: <VERSION>
+- Figma source: ./figma-source
+- Repository: https://github.com/<OWNER>/<REPOSITORY>
+- Running source: http://localhost:5173
+
+1. Read CLAUDE.md completely.
+2. Load both skills and all mandatory Appian references.
+3. Inspect every README, package file, lockfile, route, page, layout, component,
+   data file, mock service, style file, and asset reference.
+4. Run the correct install, build, lint, typecheck, test, and development commands.
+5. Launch the source and walk the complete journey with browser automation.
+6. Capture every material page/state at 1440x900, 1024x768, and 390x844.
+7. Inspect the target Appian application using read-only MCP calls.
+8. Identify reusable objects, naming conflicts, and objects that must not be touched.
+9. Infer data, roles, statuses, workflows, integrations, security, assets, and simulations.
+
+Create:
+- Plans/source-readiness-report.md
+- Plans/repository-analysis.md
+- Plans/screen-inventory.md
+- Plans/data-model.md
+- Plans/object-inventory.md
+- Plans/flows.md
+- Plans/security-model.md
+- Plans/integration-plan.md
+- Plans/asset-plan.md
+- Plans/demo-data-plan.md
+- Plans/open-questions.md
+- Plans/implementation-sequence.md
+
+For every screen record its route, screenshots, purpose, roles, displayed data,
+actions, destinations, all UI states, responsive behavior, expected Appian
+interface/view/action, and related process.
+
+For every object record its exact prefixed name, type, purpose, dependencies,
+new/reused status, source requirement, security, build phase, validation method,
+MCP/manual work, and test journey.
+
+Do not implement. Finish with numbered screen/object inventories, build order,
+blockers, assumptions, and open questions.`,
+plan:`The source inventory is approved. Remain read-only in Appian.
+
+1. Resolve JSX, DOM, CSS variables, Tailwind utilities, and component props into
+   exact widths, heights, padding, gaps, breakpoints, typography, colors, borders,
+   radii, shadows, icons, tables, and visible states.
+2. Map every source component/repeated pattern to a native SAIL composition,
+   state/data contract, responsive transformation, limitation, and fidelity risk.
+3. Plan records, keys, relationships, reference data, calculated fields,
+   interfaces, rules, actions, processes, documents, groups, security,
+   integrations/simulations, Site pages, seed data, reset support, and audit history.
+4. Give every object an exact prefixed name, dependency order, validation method,
+   test method, and manual-configuration note.
+5. Create functional, visual, responsive, accessibility, persistence, security,
+   workflow, simulation, failure, and end-to-end tests.
+
+Create:
+- Plans/01-visual-specification.md
+- Plans/02-component-mapping.md
+- Plans/03-responsive-mapping.md
+- Plans/04-appian-object-plan.md
+- Plans/05-test-plan.md
+
+Stop after presenting the plans, risks, assumptions, and unresolved decisions.`,
+build:`/appian-dev
+
+Use ./figma-source as the product, behavior, content, and visual source of truth.
+
+TARGET
+- Application: <APPLICATION NAME>
+- Prefix: <PREFIX>
+- Environment: https://<SITE>.appiancloud.com
+- Version: <VERSION>
+
+Build the complete native Appian demo in the approved dependency order.
+
+- Never embed React, HTML, or an iframe.
+- Keep every new object in the target application with the required prefix.
+- Reuse only verified target objects; do not touch unrelated content.
+- Use real records and persist every principal action.
+- Correct mock defects: missing keys, formatted numeric strings, inconsistent
+  statuses, disconnected data, and unreachable transitions.
+- Create consistent fictional data/documents for every page, KPI, filter,
+  workflow, exception, and empty/failure state.
+- Build reusable SAIL components before page interfaces.
+- Add bounded processes, tasks, assignments, notifications, audit history,
+  recovery, exports, and honest deterministic simulations.
+- Create the complete Appian Site.
+- Back up SAIL under SAIL-Interfaces/<PREFIX>.
+- Maintain Plans/06-build-log.md.
+
+After every object: add it to the application, retrieve and verify it, validate
+it, run the narrowest test, save evidence, and update the build log.
+
+Stop for deletion, overwrite, broad security changes, real credentials,
+destructive reset, cross-application impact, corruption, or unresolved validation.
+Otherwise continue until the demo is ready.`,
+test:`Run the full journey from the Appian Site as a real user.
+
+Verify access, roles, navigation, records, relationships, KPIs, search, filters,
+sorting, creation, edits, uploads, downloads, processes, tasks, approvals,
+assignments, notifications, audit history, simulations, exports, refresh
+persistence, security, and every empty/loading/validation/success/failure state.
+
+For every material screen capture source and Appian at:
+- 1440 x 900
+- 1024 x 768
+- 390 x 844
+
+Compare geometry, order, dimensions, spacing, typography, colors, borders,
+shadows, icons, wrapping, density, actions, and responsive behavior.
+
+Write visual differences under Plans/visual-diffs.
+Fix every blocking, functional, critical, and high visual defect.
+Recapture and retest.
+
+Write:
+- Plans/91-test-report.md
+- Plans/99-build-report.md
+
+The final report must list created/reused/updated objects, completed behavior,
+simulations, deferred items, passed/failed tests, limitations, manual setup,
+and next steps.`
+};
 const faqs=[["Can Figma Make push to an existing repository?","No. Figma Make creates and owns the repository connected to that Make file. Each Make file has its own repository."],["Is the Figma Make GitHub connection two-way?","No. It is a one-way push from Figma Make to the repository’s default branch. GitHub edits do not return to Make and may be overwritten by the next Make push."],["GitHub rejects my password","Run gh auth login, choose GitHub.com, HTTPS, and browser authentication. Then clone with gh repo clone."],["Appian MCP says Pending approval","Exit Claude, confirm .mcp.json is in the parent workspace, relaunch from that exact folder, approve appian, and check /mcp."],["Appian tools are missing","Load /appian-dev, check /mcp, and restart after approval. Ask Claude to inspect the tool surface rather than guessing names."],["The React app will not start","Read package.json and use the package manager matching its lockfile. Usually npm install and npm run dev."],["The Appian UI looks generic","Return to the measured visual plan. Require same-viewport screenshots and composed SAIL primitives instead of generic substitutions."],["A process model appears broken","Stop broad edits. Inspect dependencies, change one bounded path, validate immediately, and do not continue after suspected corruption."],["Should I approve “don’t ask again”?","Use it for narrow repeated reads/validation. Keep one-time approval for deletes, security, resets, overwrites, credentials, and cross-app changes."]];
 const stageEl=document.querySelector("#stages"),nav=document.querySelector("#stageNav");stages.forEach((s,i)=>{let id=`stage-${i}`,details=stageDetails[i].map((x,j)=>`<div class="instruction"><span>${j+1}</span><div><h4>${x[0]}</h4><p>${x[1]}</p></div></div>`).join(""),action=i===0?`<a class="gem-action" href="https://gemini.google.com/gem/16fDdWJ4XNR4hAhKOK5X4A7Fa_QyXvX5q?usp=sharing" target="_blank" rel="noreferrer"><span>✦</span><div><small>SHARED GEMINI GEM</small><strong>Open the Figma Make Brief Generator</strong><p>Launch the ready-made Gem, add your discovery materials, and generate the brief.</p></div><b>Open Gem ↗</b></a>`:`<div class="code"><button class="copy">Copy</button><pre>${s[3]}</pre></div>`;nav.insertAdjacentHTML("beforeend",`<button data-id="${id}">${String(i+1).padStart(2,"0")} · ${s[0]}</button>`);stageEl.insertAdjacentHTML("beforeend",`<article class="stage-card" id="${id}"><small>STAGE ${String(i+1).padStart(2,"0")}</small><h3>${s[0]}</h3><p class="stage-intro">${s[1]}</p><div class="instructions">${details}</div><h4 class="completion-title">Completion checklist</h4><div class="checklist">${s[2].map((x,j)=>`<label class="check"><input type="checkbox" data-key="${i}-${j}"><span>${x}</span></label>`).join("")}</div>${action}</article>`)});let saved=JSON.parse(localStorage.getItem("fta-progress")||"{}");document.querySelectorAll(".check input").forEach(x=>{x.checked=!!saved[x.dataset.key];x.onchange=progress});function progress(){let a=[...document.querySelectorAll(".check input")],d=a.filter(x=>x.checked).length;document.querySelector("#progressValue").textContent=Math.round(d/a.length*100)+"%";localStorage.setItem("fta-progress",JSON.stringify(Object.fromEntries(a.map(x=>[x.dataset.key,x.checked]))))}progress();document.querySelector("#reset").onclick=()=>{document.querySelectorAll(".check input").forEach(x=>x.checked=false);progress()};nav.querySelectorAll("button").forEach(b=>b.onclick=()=>document.querySelector("#"+b.dataset.id).scrollIntoView());const stageObserver=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)nav.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.id===e.target.id))}),{rootMargin:"-30% 0px -60%"});document.querySelectorAll(".stage-card").forEach(card=>stageObserver.observe(card));
 function wire(){document.querySelectorAll(".copy").forEach(b=>b.onclick=async()=>{await navigator.clipboard.writeText(b.parentElement.querySelector("pre").innerText);let t=document.querySelector("#toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1400)})}function show(k){document.querySelector("#promptPanel").innerHTML=`<div class="code"><button class="copy">Copy prompt</button><pre>${prompts[k]}</pre></div>`;wire()}document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");show(b.dataset.tab)});show("setup");wire();let faq=document.querySelector("#faq");faqs.forEach(([q,a])=>faq.insertAdjacentHTML("beforeend",`<div class="faq-item"><button class="faq-q">${q}<span>＋</span></button><div class="faq-a">${a}</div></div>`));faq.querySelectorAll(".faq-q").forEach(b=>b.onclick=()=>b.parentElement.classList.toggle("open"));

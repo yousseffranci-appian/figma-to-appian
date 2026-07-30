@@ -23,3 +23,9 @@
 footer{padding-left:var(--page-gutter);padding-right:var(--page-gutter)}
 @media(max-width:900px){.guide{grid-template-columns:1fr}}
 @media(max-width:600px){.hero{width:100%}.instruction{grid-template-columns:30px 1fr}.gem-action{grid-template-columns:38px 1fr}.gem-action>span{width:38px;height:38px}.gem-action>b{grid-column:2}}
+.brand-logos{display:flex;align-items:center;gap:11px;min-width:172px}
+.figma-logo{width:18px;height:27px;display:block}
+.brand-arrow{color:#707482;font-size:18px;line-height:1}
+.appian-logo{width:86px;height:auto;display:block}
+.footer-logos .brand-arrow{color:#bfc1ca}
+.footer-logos .appian-logo{filter:brightness(0) invert(1)}
