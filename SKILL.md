@@ -1,179 +1,344 @@
 ---
-name: appian-aurora-design-system
-description: Use when designing UIs for Appian SAIL applications (Mercury sites, Solutions, PHQ apps). Provides Aurora design tokens (colors, type), iconography mapping, content/voice guidance, and a Mercury site UI kit with header, cards, grids, banners, tags, forms.
+name: figma-react-to-appian-sail
+description: Translate a Figma Make export or React/HTML/CSS/Tailwind application into the closest technically achievable native Appian SAIL implementation. Use when Claude Code must inspect a frontend repository, decompose its exact visual system, map React components and interactions to SAIL, build Appian objects through Developer MCP, create a persistent end-to-end demo, or converge source and Appian screenshots across desktop, tablet, and mobile.
+argument-hint: "[source-path] [target-Appian-application]"
 ---
 
-# Appian Dev — Figma-to-Appian Demo Builder
+# Figma/React to Appian SAIL
 
-Rebuilds the application in `./figma-source` as a native, fully working Appian demo. The rebuild
-must be Appian-native (SAIL interfaces, record types, process models) — never an embedded React/HTML
-shell. "Native" is the whole point: it's what proves the design translates to the platform.
+Recreate the supplied frontend as a native Appian application with maximum visual and functional fidelity. Treat the running source application as the visual and behavioral source of truth. Treat React, HTML, CSS, Tailwind, screenshots, and Figma assets as evidence—not deployable Appian code.
 
-# Appian Aurora Design System
+Interpret `$ARGUMENTS` as an optional source path followed by an optional target Appian application name or URL. Discover either value from the current project when omitted.
 
-Source recreation of [appian-design/aurora](https://github.com/appian-design/aurora). Use the tokens in `colors_and_type.css` and the components in `ui_kits/sail_site/` for any Appian SAIL mockup.
+## Non-negotiable principles
 
-## Quick start
-1. Link `colors_and_type.css` and `ui_kits/sail_site/site.css`.
-2. Load FontAwesome 5 from CDN; reference Aurora icons by their FA equivalent (see README).
-3. For full demos, mount the React kit (SiteChrome.jsx + Components.jsx + App.jsx) — see `ui_kits/sail_site/index.html`.
-4. For each customer demo, override `--accent` and `--nav-bar` in `:root` to the brand color.
+1. Preserve source content, hierarchy, layout, density, states, interactions, and responsive behavior unless Appian makes a specific detail impossible.
+2. Use Appian-native SAIL, records, rules, actions, processes, documents, groups, and Sites. Never embed or execute the source web application in Appian.
+3. Prefer a composed SAIL implementation that resembles the source over a generic Appian pattern.
+4. Use an Appian design system only where it reproduces the source accurately. It is a component toolbox, not the visual authority.
+5. Make principal actions work and persist. Never present a disconnected demo control as functional.
+6. Simulate unavailable external services honestly. Persist believable inputs and outputs and label them as simulated.
+7. Measure visual fidelity by rendered screenshots, not by valid SAIL alone.
+8. Do not modify unrelated Appian objects, applications, records, documents, or security.
 
+## Inputs
 
-## Companion skill: appian-aurora-design-system
+Locate or request only inputs that cannot be discovered:
 
-**Mandatory prerequisite for Phase 3.** Load `appian-aurora-design-system` before building any SAIL
-interface. It supplies the actual Appian visual language — color/type tokens, the Mercury site UI
-kit, iconography mapping, and content/voice guidance — that a native rebuild should render with.
-`./figma-source` is the source of truth for *what* to build (structure, hierarchy, content, flows,
-interactions); Aurora is the source of truth for *how it should look* as a real Appian app. Don't
-replicate the Figma prototype's raw CSS in SAIL — reconcile the two per the rule in Phase 3.
+- source repository or local clone;
+- target Appian site and application name, UUID/URL, and prefix;
+- connected Appian Developer MCP server;
+- installed Appian development skill and version-matched references;
+- credentials or browser authentication only when the official flow requires them;
+- explicit scope exceptions, such as production integration or destructive migration.
 
-## Before starting: confirm the execution path (do this first, every time)
+If the target application is not specified, remain read-only in Appian and produce the source inventory and target-independent plans.
 
-This skill assumes Claude Code has *some* way to actually create/modify objects in a live Appian
-environment, and that mechanism determines almost everything about how the rest of this skill
-executes. Common possibilities, in rough order of how Appian environments are typically wired up:
+## Required tool posture
 
-- An **Appian MCP connector** or API integration is available to this session.
-- Appian's **Git-backed application development** (package/deployment sync) is configured for the
-  target environment, so objects can be authored as files and pushed via Appian's deployment
-  tooling/CLI.
-- No programmatic access exists, and object creation has to happen through **browser automation**
-  against Appian Designer's web UI (e.g. via a browser-use tool), driven click-by-click.
+Load the installed Appian development skill completely before Appian design or execution. Read every universal reference it marks as mandatory, including MCP tooling, confirmation behavior, SAIL components/functions, null safety, short-circuit behavior, and verification checkpoints.
 
-**Do not assume which of these is true.** Check what's actually available in the current session
-(connectors, CLI tools, credentials) before planning. If none of the above is confirmed, stop and
-ask the user how Claude Code is meant to reach the target Appian environment — this is a
-credential/access question, not a design decision, and it's the one thing in this whole workflow
-worth blocking on even under "work autonomously" instructions.
+Use:
 
-Also confirm up front, since the rest of the plan depends on them:
-- Target application name and exact object prefix (e.g. `FTA`)
-- The GitHub repo URL/path for `./figma-source`
-- Whether the target Appian environment is a dedicated dev/demo environment (not shared with other
-  live work) — this matters because of the "don't touch unrelated objects" constraint below
+- repository and shell tools for source inspection;
+- the source app’s supported package manager and development server;
+- a browser automation or screenshot tool to render source and Appian screens;
+- Appian Developer MCP for Appian reads, writes, validation, tests, and object inspection.
 
-## Non-negotiable constraints (apply throughout, not just at setup)
+If an expected Appian tool is unavailable, inspect the MCP tool surface rather than inventing a tool name.
 
-- Native Appian patterns only — no embedded web app.
-- Visual language comes from Aurora tokens/components, not from the Figma source's raw CSS — Figma
-  governs structure and intent, Aurora governs rendering (see Phase 3).
-- Every object created gets the confirmed prefix.
-- Never modify objects or applications outside the target app's scope.
-- Ask for explicit confirmation only for: destructive actions, actions requiring external
-  credentials, or writes Appian itself gates behind confirmation. Everything else — reasonable
-  design decisions, object structure, demo data content — proceed autonomously.
-- Persist all data; every user-facing action in the demo journey must actually do something, not
-  just navigate.
+Approve repeated read, validate, and narrowly scoped create calls only when the target is unambiguous. Require explicit confirmation before:
 
-## Phase 1 — Inspection
+- deletion;
+- overwriting a pre-existing object;
+- broad or lockout-capable security changes;
+- changes outside the target application;
+- real external credentials or integrations;
+- destructive data reset;
+- continuing after suspected process-model corruption.
 
-1. Read `./figma-source` in full: component tree, routes/screens, state shape, mock data shapes,
-   any brief/PRD file left alongside it (e.g. `docs/figma-make-brief.md` — read this first if
-   present, it carries intent that the code alone won't).
-2. Click through the live Figma Make prototype end-to-end and screenshot every page and state via
-   browser automation — every screen, not a sample, and regardless of how complete the exported
-   HTML/CSS already looks. Save under `./figma-source/screenshots/<screen-name>.png`, named to
-   match the screen inventory you'll write in Phase 2. This is required every time — it's the
-   visual ground truth Phase 3 interfaces get checked against.
-3. Inspect the existing target Appian application for objects you can reuse (shared components,
-   existing record types/rules that already fit) before creating new ones.
-4. From all of the above, infer and write down (don't just hold in context — see Phase 2):
-   - Data model / entities / relationships / statuses
-   - Roles and the permission boundary between them
-   - Full screen inventory and the flows connecting them (list/detail/form/empty/error states)
-   - Where the design implies an external integration (CRM, e-sign, AI, payment, etc.)
-   - Anything visually distinctive worth preserving deliberately (density, layout rhythm, component
-     patterns) versus incidental React implementation detail that doesn't need to survive
+## Workspace and evidence
 
-## Phase 2 — Plan
+Use or create:
 
-Write plans to `./Plans` before building anything:
-- `./Plans/data-model.md` — entities, fields, relationships, statuses, prefix-named object list
-- `./Plans/object-inventory.md` — every record type, interface, process model, site page, rule,
-  document, and report you intend to create, each with its intended FTA-prefixed name
-- `./Plans/flows.md` — the end-to-end journeys implied by the source app (e.g. upload → analysis →
-  review/edit → approval → export → AI assistant), including whatever external-system linking the
-  source actually contains — don't assume a CRM (or any specific integration) exists unless the
-  source shows one; infer the integration set from `./figma-source`, not from a template list.
-  Include failure/exception paths, not just happy paths.
-- `./Plans/open-questions.md` — anywhere the source design underspecifies something and you made a
-  reasonable call; log the call and move on, don't block on it
+```text
+Plans/<app-slug>/
+├── 00-source-inventory.md
+├── 01-visual-specification.md
+├── 02-component-mapping.md
+├── 03-responsive-mapping.md
+├── 04-appian-object-plan.md
+├── 05-test-plan.md
+├── 06-build-log.md
+├── visual-diffs/
+├── 91-test-report.md
+└── 99-build-report.md
 
-Where the Figma source doesn't spell out a layout choice or component behavior, make the closest
-reasonable Appian-native decision — repurposing existing SAIL components in combinations the source
-didn't literally show is expected, not a deviation, as long as the result preserves the visual
-hierarchy and intent.
+SAIL-Interfaces/<PREFIX>/
+screenshots/source/
+screenshots/appian/
+assets/demo-documents/
+```
 
-## Phase 3 — Build
+Do not create planning files before completing the relevant inspection. Record exact evidence paths, routes, selectors, component names, and Appian object identifiers.
 
-Work screen-by-screen / flow-by-flow, not all-at-once:
+## Phase 1 — Inspect without changing Appian
 
-1. **Data layer first**: record types, relationships, statuses, validations, security.
-2. **Process layer**: process models for anything stateful/multi-step (approvals, exception
-   handling, notifications), with realistic assignments and audit history.
-3. **Interface layer**: SAIL interfaces per screen, matching the source's structure, visual
-   hierarchy, and responsive behavior — expressed through Aurora, not the Figma prototype's raw
-   styling:
-   - Layout, component choice, and content per screen come from `./figma-source` and its Phase 1
-     screenshots.
-   - Colors, type, spacing, chrome (headers/cards/grids/banners/tags/forms), and iconography come
-     from Aurora's `colors_and_type.css` and `ui_kits/sail_site/` — map each Figma component to its
-     closest Aurora equivalent rather than hand-rolling a look-alike.
-   - If the Figma source implies a specific brand accent color, apply it the way Aurora expects:
-     override `--accent`/`--nav-bar` in `:root` rather than introducing ad hoc colors elsewhere.
-   - Labels, empty-state text, error messages, and other UI copy follow Aurora's content and voice
-     guidance for tone consistency.
-   - Reference the Phase 1 screenshots while building, not just the HTML — SAIL layout primitives
-     don't map 1:1 to CSS, so the screenshot is ground truth for "does this look right," the HTML is
-     ground truth for "what does this contain and in what order."
-4. **Simulated integrations**: for anything the source app calls out to externally (and any real
-   integration that isn't actually available in this environment), build a demo-safe simulation —
-   deterministic-enough to be reliable in a live demo, but with realistic latency/failure states so
-   it doesn't feel fake.
-5. **Site**: assemble the full site structure so the app is navigable end-to-end, not just
-   individually reachable pages.
-6. **Supporting assets**:
-   - Billboard/hero imagery: check Aurora's `assets/` for existing billboard imagery that already
-     fits before generating anything new. When something new is genuinely needed, generate as SVG
-     first, rasterize to PNG (check available tooling in the sandbox — e.g. a headless renderer or
-     SVG-to-PNG library — before assuming one exists), and keep it visually consistent with Aurora's
-     existing billboard style.
-   - Demo documents (PDFs, generated reports) needed for the review/export/approval journey.
+### Inspect the source
 
-## Phase 4 — Demo data
+Run the application when feasible. Read, at minimum:
 
-Populate enough realistic fictional data that every page, KPI, filter, record view, and workflow is
-demonstrable without looking sparse — including enough variety to show different statuses,
-edge cases (empty states, overdue items, rejected items), and enough volume that list views and
-filters are meaningfully testable.
+- package manifest and lockfile;
+- router and application entry points;
+- pages, layouts, shared components, dialogs, tabs, drawers, and navigation;
+- JSX/TSX markup and component props;
+- CSS, CSS modules, CSS variables, Tailwind config/classes, and theme files;
+- assets, fonts, icons, images, and generated asset resolvers;
+- mock data, stores, state transitions, validation, and fake APIs;
+- viewport-dependent behavior and hidden/overflow behavior;
+- empty, loading, success, validation, error, disabled, selected, hover, focus, and expanded states.
 
-## Phase 5 — Validate and test
+Distinguish:
 
-1. Validate every object immediately after creating it — don't batch validation to the end.
-2. Test every workflow end-to-end as a user would run it, not just check that objects exist.
-3. Fix errors as found; keep iterating until the full demo journey runs clean start to finish.
-4. Log test runs to `./Plans/test-reports/`.
-5. Back up SAIL interface definitions to `./SAIL-Interfaces/` as you go, not just at the end.
+- working behavior;
+- static visual behavior;
+- fake or timed behavior;
+- dead controls;
+- unused dependencies/components;
+- inferred behavior not evidenced by the source.
 
-## Phase 6 — Report
+Capture every material screen and state at the source application’s intended viewports. Default to:
 
-Produce a final build report under `./Plans/build-report.md`: what was built, what was simulated
-vs. real, known limitations, and how to run the demo journey end-to-end.
+- desktop: 1440 × 900;
+- tablet: 1024 × 768;
+- mobile: 390 × 844.
 
-## Reminders throughout
+Use additional breakpoints when source CSS changes elsewhere.
 
-- Reuse existing suitable FTA objects before creating new ones.
-- Stay inside the target application's scope — never touch unrelated apps/objects.
-- Autonomy is the default; only stop for destructive actions, external credentials, or explicit
-  platform confirmation prompts.
+### Inspect the target
 
+Remain read-only. Inventory the target application’s objects, folders, data model, naming, design-system components, Sites, groups, and security. Identify reusable objects and conflicts. Never assume an empty target.
 
-## Files
-- `README.md` — full design system docs (content, visual, iconography).
-- `colors_and_type.css` — tokens.
-- `assets/` — Appian logos, favicons, billboard imagery.
-- `preview/` — design-system preview cards.
-- `ui_kits/sail_site/` — Mercury SAIL site React kit + working demo.
-- `site_styles/` — reference screenshots of real SAIL site chrome.
+Write `00-source-inventory.md`. Include:
+
+- routes and screen/state matrix;
+- navigation graph;
+- component inventory and reuse frequency;
+- forms, fields, rules, and actions;
+- data entities and relationships;
+- workflows and status transitions;
+- integrations and simulations;
+- accessibility issues in the source;
+- target-application conflicts and reuse candidates.
+
+## Phase 2 — Produce an exact visual specification
+
+Do not start SAIL implementation until this phase is complete.
+
+For every screen, inspect the actual rendered DOM plus JSX and styles. Resolve utilities into explicit values. For example:
+
+```text
+max-w-7xl px-6 py-6 grid md:grid-cols-2 lg:grid-cols-3 gap-4
+```
+
+Record as:
+
+```text
+max content width: 1280 px
+horizontal/vertical padding: 24 px
+columns: 1 below 768; 2 at 768–1023; 3 at 1024+
+gap: 16 px
+```
+
+Write `01-visual-specification.md` with:
+
+- viewport and content widths;
+- header/navigation dimensions;
+- page and section spacing;
+- grids, columns, alignment, wrapping, and ordering;
+- component dimensions, padding, borders, radii, and shadows;
+- background, text, border, semantic, and interaction colors;
+- font family, size, weight, line height, case, and truncation;
+- icons, sizes, stroke style, and placement;
+- buttons, inputs, tables, cards, dialogs, badges, and tabs;
+- all visible states;
+- source screenshots and the exact route/state used.
+
+Extract reusable tokens into a table. Preserve semantic roles even when Appian requires the nearest supported literal value.
+
+## Phase 3 — Map React and Tailwind to SAIL
+
+Write `02-component-mapping.md`. Create one row per source component or repeated inline pattern:
+
+| Source component | Source evidence | SAIL composition | State/data contract | Responsive behavior | Fidelity risk |
+|---|---|---|---|---|---|
+
+Use these mapping heuristics:
+
+- CSS grid → nested `a!columnsLayout()`/`a!columnLayout()` or a responsive card/list composition.
+- Flex row/column → columns, side-by-side layouts, card contents, or ordered component arrays.
+- Card → `a!cardLayout()` with measured padding, border, radius, background, and contents.
+- Status pill → supported tag component when sufficiently faithful; otherwise compose icon and styled text/card primitives.
+- HTML table → `a!gridField()` backed by records or queries; provide a mobile card alternative when necessary.
+- Modal/drawer → record action, related action, task form, or dialog-capable Appian pattern.
+- Route detail → record summary/view or Site page with record context.
+- Tabs → record views or stateful SAIL tab controls, preserving order and active styling.
+- Browser file upload → `a!fileUploadField()` plus persisted Document metadata.
+- Local state mutation → record writes, process variables, or local UI state according to required persistence.
+- Toast → Appian confirmation, validation, banner, or process completion message.
+- Client filtering/sorting → record query, user filter, or server-backed grid behavior.
+- Browser export → Appian-generated document from saved data.
+- Hover-only action → visible accessible action link/button.
+
+Do not mechanically force one source component into one SAIL component. Compose multiple primitives when that is more faithful.
+
+For each mismatch:
+
+1. name the Appian limitation;
+2. preserve, in order: information hierarchy, placement, density, typography, color/decoration, interaction detail;
+3. document the intended approximation;
+4. do not silently substitute a generic template.
+
+Write `03-responsive-mapping.md` with a breakpoint-by-breakpoint transformation for every page and shared component. Preserve content order, column transitions, action availability, and readable data presentation. Avoid relying on horizontal scroll as the only mobile solution.
+
+## Phase 4 — Design the native Appian application
+
+Infer the smallest coherent Appian architecture that supports the complete source journey:
+
+- record types, fields, keys, relationships, reference data, calculated fields, and sync;
+- interfaces, reusable visual components, expression rules, constants, and folders;
+- record lists, views, actions, related actions, and Sites;
+- groups, roles, object security, and record security;
+- process models, tasks, statuses, notifications, exception paths, and activity/audit history;
+- document storage and generation;
+- external integrations or clearly labeled simulations;
+- realistic fictional seed data and demo documents;
+- reset/reseed support when the user requests an end-to-end demo.
+
+Never copy mock-array defects into the data model. Resolve missing foreign keys, string-formatted numeric fields, inconsistent status vocabularies, and unreachable transitions.
+
+Write `04-appian-object-plan.md`. For each object specify:
+
+- exact prefixed name and type;
+- source requirement/screen;
+- dependencies and creation order;
+- security;
+- MVP/demo/deferred status;
+- MCP reliability and manual configuration;
+- validation and test method.
+
+Write `05-test-plan.md` covering visual, functional, data, workflow, security, responsive, accessibility, simulation, failure, refresh/persistence, and end-to-end cases.
+
+## Phase 5 — Build in dependency order
+
+Unless the user requested planning only, proceed after plans are coherent and the target is safe.
+
+Build in this order:
+
+1. folders, groups, constants, document folders, and safe security foundations;
+2. reference data and record types;
+3. fields, relationships, views, filters, and actions;
+4. seed records and fictional documents;
+5. reusable visual SAIL components;
+6. application shell and navigation;
+7. screens in journey order;
+8. persistent actions and metric rules;
+9. process models and tasks;
+10. simulated or real integrations as authorized;
+11. export/document generation;
+12. Site configuration;
+13. reset/reseed administration when in scope.
+
+After every object:
+
+- add it to the target application if required;
+- retrieve it and verify identity/configuration;
+- validate expressions and design objects;
+- run the narrowest relevant test;
+- save SAIL source locally;
+- update `06-build-log.md`;
+- stop on corruption, cross-application impact, or an unresolved validation error.
+
+Use null-safe expressions and explicit short-circuit patterns required by the Appian skill. Do not create large process models in one blind operation. Build and verify one bounded process path or node group at a time.
+
+## Phase 6 — Functional demo fidelity
+
+For a demo build:
+
+- generate realistic fictional data sufficient to populate every view, KPI, state, filter, and workflow;
+- create fictional documents with a visible demonstration disclaimer;
+- persist every principal user action;
+- replace unavailable APIs/AI with deterministic simulations driven by current record data and selected scenarios;
+- include success, pending, empty, validation, and recoverable failure scenarios;
+- ensure refresh does not erase completed actions;
+- never claim a simulation is a live integration or genuine AI inference.
+
+Every visible principal control must either work, be visibly disabled with an explanation, or be removed when the source control was dead and the user did not ask to preserve it.
+
+## Phase 7 — Screenshot convergence
+
+Perform this loop screen by screen:
+
+1. set identical source and Appian viewport dimensions;
+2. navigate both to equivalent data and UI state;
+3. capture full-page and detail screenshots;
+4. compare hierarchy, geometry, spacing, typography, colors, borders, icons, wrapping, content density, and responsive behavior;
+5. record discrepancies in `visual-diffs/<screen>-diff.md`;
+6. classify each discrepancy as critical, high, medium, low, or unavoidable;
+7. fix critical/high discrepancies first, then medium discrepancies;
+8. re-render and repeat until convergence.
+
+Apply these targets where SAIL permits:
+
+- content/actions and section order: 100%;
+- principal grid, alignment, and stacking: exact;
+- spacing/dimension deviation: within 8 px for major geometry and 4 px for repeated components;
+- typography: preserve hierarchy, weight, case, and wrapping;
+- colors: nearest supported value with consistent semantic use;
+- responsive state changes: same breakpoint intent and content order;
+- no critical or high visual discrepancy at completion.
+
+Do not falsify precision when Site chrome, browser rendering, or SAIL constraints make a measurement uncontrollable. Document unavoidable deviations.
+
+## Phase 8 — Validate the end-to-end journey
+
+Execute the complete user journey from Site entry through final outcome. Verify:
+
+- navigation and access;
+- saved records and relationships;
+- KPIs based on actual saved data;
+- creation/upload;
+- process transitions and tasks;
+- edits and approvals;
+- activity/audit history;
+- exports using current saved data;
+- simulated integrations;
+- empty, loading, success, and failure states;
+- persistence after refresh;
+- desktop, tablet, and mobile rendering;
+- absence of SAIL validation errors and broken Site pages.
+
+Write `91-test-report.md` with expected/actual results, evidence, affected objects, and remediation. Fix blocking and functional failures, then repeat affected tests.
+
+Write `99-build-report.md` with:
+
+- objects created, reused, and changed;
+- implemented, simulated, deferred, and manual functionality;
+- visual fidelity status and unavoidable deviations;
+- tests passed/failed;
+- security and configuration notes;
+- reproducible demo steps;
+- remaining risks.
+
+## Completion criteria
+
+Do not declare completion merely because objects were created or interfaces render. Completion requires:
+
+- a navigable Appian Site or explicitly scoped equivalent;
+- working, persistent principal journeys;
+- valid and tested SAIL/design objects;
+- representative demo data when requested;
+- screenshot comparison at all required viewports;
+- no unresolved critical/high visual discrepancy;
+- documented limitations and simulations;
+- no unrelated Appian changes.
