@@ -1,14 +1,14 @@
 const stages=[
 ["Discover and brief the journey","Turn real discovery evidence into a consistent, high-impact Figma Make brief before opening design tools.",["Collect discovery notes, client material, and full transcripts","Use the Figma Make Brief Generator Gem","Confirm every persona and business journey","Define the exception path and honest simulations","Reuse the same fictional names, IDs, values, and statuses"],`# Give the Figma Make Brief Generator Gem:\n- discovery transcripts\n- client/prospect materials\n- brand and visual references\n\n# Review the output before moving to Figma Make.`],
-["Install your tools","Prepare a fresh Mac with the command-line tools the workflow needs.",["Install Homebrew if needed","Install Git, Node.js, Python 3.12, uv, and GitHub CLI","Install Claude Code and sign in","Run the health check"],`# 1. Check whether Homebrew is already installed\nbrew --version\n\n# 2. Only if Terminal says \"command not found\", install Homebrew\n/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"\n\n# 3. Run every command shown under Homebrew's \"Next steps\", then verify\nbrew --version\n\n# 4. Install the required development tools\nbrew install git node python@3.12 gh\n\n# 5. Install uv\ncurl -LsSf https://astral.sh/uv/install.sh | sh\n\n# 6. Close Terminal completely, reopen it, then verify every tool\ngit --version\nnode --version\nnpm --version\npython3 --version\nuv --version\ngh --version\n\n# 7. Install Claude Code (do not use sudo)\nnpm install -g @anthropic-ai/claude-code\n\n# 8. Verify and diagnose Claude Code\nclaude --version\nclaude doctor\n\n# 9. Start Claude Code and complete browser authentication\nclaude\n\n# 10. When authentication is complete, leave Claude Code with\n/exit`],
+["Install your tools","Prepare your macOS, Windows, or Linux computer with the command-line tools the workflow needs.",["Install the system prerequisites","Install Git, Node.js, Python, uv, and GitHub CLI","Install Claude Code and sign in","Run every version and health check"],``],
 ["Install both skills","Run this block once. It installs or updates both skills automatically—there is no manual file copying.",["Run the complete installer block","Confirm appian-dev contains SKILL.md and references","Confirm figma-react-to-appian-sail contains SKILL.md","Restart Claude Code so it discovers the skills"],`mkdir -p "$HOME/.claude/skills"\n\nif [ -d "$HOME/.claude/skills/appian/.git" ]; then\n  git -C "$HOME/.claude/skills/appian" pull --ff-only\nelse\n  git clone https://github.com/appian/dev-mcp-skills.git "$HOME/.claude/skills/appian"\nfi\n\nif [ ! -e "$HOME/.claude/skills/appian-dev" ]; then\n  ln -s "$HOME/.claude/skills/appian/skills/appian" "$HOME/.claude/skills/appian-dev"\nfi\n\nmkdir -p "$HOME/.claude/skills/figma-react-to-appian-sail"\ncurl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/SKILL.md" \\\n  -o "$HOME/.claude/skills/figma-react-to-appian-sail/SKILL.md"\n\nls "$HOME/.claude/skills/appian-dev"\nls "$HOME/.claude/skills/figma-react-to-appian-sail"`],
 ["Prepare Appian","Use a sandbox and confirm Developer MCP and Designer access.",["Confirm your Appian version","Enable Developer MCP","Confirm object-creation permission","Create or identify the target application and prefix"],`Application: <APP NAME>\nPrefix: <PREFIX>\nDesigner URL: <APP URL>\nSite: https://<SITE>.appiancloud.com`],
 ["Create the workspace","Keep source, evidence, plans, project instructions, MCP configuration, and SAIL backups together.",["Create the parent folder","Create Plans, SAIL, screenshot, and asset folders","Initialize Git","Clone the Figma Make repository","Download and customize CLAUDE.template.md as CLAUDE.md"],`# Replace these two values before running anything\nPROJECT_NAME="my-appian-demo"\nGITHUB_REPOSITORY="OWNER/FIGMA-MAKE-REPOSITORY"\n\n# 1. Authenticate GitHub CLI\n# Choose: GitHub.com → HTTPS → Yes → Login with a web browser\ngh auth login\ngh auth status\n\n# 2. Create and enter the parent project folder\nmkdir -p "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"\ncd "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"\n\n# 3. Initialize the local project and evidence folders\ngit init\nmkdir -p Plans SAIL-Interfaces screenshots/source screenshots/appian assets/demo-documents\n\n# 4. Clone the Figma Make repository into the required folder name\ngh repo clone "$GITHUB_REPOSITORY" figma-source\n\n# 5. Confirm the source exists\ngit -C figma-source status\nls -la figma-source\n\n# 6. Download the project-instructions template\ncurl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/CLAUDE.template.md" \\\n  -o CLAUDE.md\n\n# 7. Open CLAUDE.md and replace every [BRACKETED VALUE]\nopen -a TextEdit CLAUDE.md\n\n# 8. Confirm you are still in the parent workspace\npwd\nls -la`],
 ["Connect Appian MCP","Launch Claude from the parent folder, configure the project server, restart, and approve it.",["Start Claude from the parent folder","Load /appian-dev","Configure project-level MCP","Restart and approve appian","Verify /mcp and listApplications"],`# 1. Replace the project name, then enter the PARENT workspace\ncd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"\n\n# 2. Start Claude Code from this folder\nclaude\n\n# 3. Inside Claude Code, load the Appian skill\n/appian-dev\n\n# 4. Paste this setup request, replacing the URL\nConfigure the Appian Developer MCP server for this project.\n\nAppian environment:\nhttps://<YOUR-SITE>.appiancloud.com\n\nDo not create, update, or delete any Appian objects.\nInspect the installed Appian skill, follow its official version-matched setup\ninstructions, create the project-level .mcp.json, tell me when official browser\nauthentication is required, and finish with a read-only listApplications test.\n\n# 5. When Claude says approval is pending, exit\n/exit\n\n# 6. In normal Terminal, verify the configuration exists\npwd\nls -la .mcp.json\n\n# 7. Restart from the SAME folder and approve only the appian server\nclaude\n\n# 8. Inside Claude Code, confirm the connection\n/mcp\n/appian-dev\n\n# 9. Paste this final read-only test\nRemain strictly read-only. Call listApplications, confirm the target application\nis visible, and do not call any create, update, add, insert, upload, or delete tool.`],
-["Run and inspect the source","The rendered Figma Make app is the visual and behavioral authority.",["Install source dependencies","Run the React development server","Check every page and state","Create Plans/source-readiness-report.md","Capture important pages and states","Invoke the translation skill","Complete Phase 1 read-only"],`# TERMINAL WINDOW 1 — run the Figma source\ncd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>/figma-source"\n\n# Check package.json and the lockfile before choosing the package manager\nls -la\n\n# For package-lock.json, run\nnpm install\nnpm run build\nnpm run dev\n\n# Keep this window running. Open the Local URL shown by Vite,\n# commonly http://localhost:5173\n\n# TERMINAL WINDOW 2 — start Claude from the PARENT workspace\ncd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"\nclaude\n\n# Inside Claude Code\n/appian-dev\n/figma-react-to-appian-sail ./figma-source\n\n# Paste the complete Source audit prompt from the Prompt library below.\n# Keep Appian read-only until the inventory and plans are approved.`],
-["Plan the translation","Turn JSX, Tailwind, CSS, routes, and states into measurable SAIL mappings.",["Approve the source inventory","Create the visual specification","Create component and responsive mappings","Create the Appian object plan","Create the test plan"],`Proceed with planning only.\nCreate the inventory, visual specification, mappings,\nobject plan, and test plan. Do not build yet.`],
-["Build in dependency order","Create native objects, persistence, honest simulations, and a complete Appian Site.",["Create foundations and records","Seed fictional data and documents","Build shared components and screens","Add workflows, actions, and exports","Create the Site","Validate and log every object"],`The plans are approved. Proceed with the complete build.\nWork only in <APP NAME> using <PREFIX>.\nPersist principal actions and validate every object.`],
-["Converge, test, and hand off","A valid interface is not done until visual and end-to-end testing passes.",["Compare at 1440×900","Compare at 1024×768 and 390×844","Fix critical/high visual differences","Run the full user journey","Verify persistence and recovery","Produce final reports"],`Execute screenshot convergence for every material screen.\nRun the complete journey, fix blocking and high-impact defects,\nand write the final test and build reports.`]
+["Run and inspect the source","The rendered Figma Make app is the visual and behavioral authority.",["Install source dependencies","Run the React development server","Check every page and state","Create Plans/source-readiness-report.md","Capture important pages and states","Invoke the translation skill","Complete Phase 1 read-only"],``],
+["Plan the translation","Turn JSX, Tailwind, CSS, routes, and states into measurable SAIL mappings.",["Approve the source inventory","Create the visual specification","Create component and responsive mappings","Create the Appian object plan","Create the test plan"],``],
+["Build in dependency order","Create native objects, persistence, honest simulations, and a complete Appian Site.",["Create foundations and records","Seed fictional data and documents","Build shared components and screens","Add workflows, actions, and exports","Create the Site","Validate and log every object"],``],
+["Converge, test, and hand off","A valid interface is not done until visual and end-to-end testing passes.",["Compare at 1440×900","Compare at 1024×768 and 390×844","Fix critical/high visual differences","Run the full user journey","Verify persistence and recovery","Produce final reports"],``]
 ];
 const stageDetails=[
 [
@@ -19,10 +19,10 @@ const stageDetails=[
 ["Publish from Figma Make","Use Make settings → GitHub → Connect GitHub. On the first push choose Create Repository. Remember: Figma Make creates its own repository, pushes only to the default branch, and synchronization is one-way—later Make pushes can overwrite GitHub edits."]
 ],
 [
-["Check Homebrew","Run <code>brew --version</code>. If it returns a version, continue. Otherwise install Homebrew from its official installer and run any “Next steps” commands it prints."],
-["Install the toolchain","Install Git, Node.js, Python 3.12, GitHub CLI, and <code>uv</code> using the command block below. Close and reopen Terminal after installing <code>uv</code>."],
-["Verify every command","Run <code>git --version</code>, <code>node --version</code>, <code>npm --version</code>, <code>python3 --version</code>, <code>uv --version</code>, and <code>gh --version</code>. Do not continue until each returns a version."],
-["Install and authenticate Claude Code","Install Claude Code without <code>sudo</code>, run <code>claude doctor</code>, then run <code>claude</code>. Complete browser authentication and use <code>/exit</code> to return to Terminal."]
+["Use the selected system instructions","The macOS tab uses Terminal and Homebrew, Windows uses PowerShell and WinGet, and Linux uses an Ubuntu/Debian terminal with apt. Select your system above before copying commands."],
+["Install the toolchain","Install Git, Node.js, Python, GitHub CLI, and <code>uv</code> with the command block shown for your system. Close and reopen the terminal when instructed so updated paths are loaded."],
+["Verify every command","Run all version checks in the selected block. Do not continue until Git, Node, npm, Python, uv, and GitHub CLI each print a version."],
+["Install and authenticate Claude Code","Install Claude Code as your normal user, run <code>claude doctor</code>, then run <code>claude</code>. Complete browser authentication and type <code>/exit</code> inside Claude Code—not in the normal terminal."]
 ],
 [
 ["Run the complete installer","Copy the entire command block below into Terminal. It safely updates the Appian repository when already installed and downloads the current visual-translation skill directly from this GitHub repository."],
@@ -234,6 +234,455 @@ The final report must list created/reused/updated objects, completed behavior,
 simulations, deferred items, passed/failed tests, limitations, manual setup,
 and next steps.`
 };
+const osCommands={
+mac:{
+1:`# Run each section in Terminal. Lines beginning with # are explanations.
+
+# 1. Install Apple's command-line tools if they are missing
+xcode-select --install
+
+# 2. Check for Homebrew
+brew --version
+
+# If "command not found" appeared, install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# IMPORTANT: run the exact "Next steps" commands printed by Homebrew,
+# then close and reopen Terminal before continuing.
+
+# 3. Install Git, Node.js, Python 3.12, GitHub CLI, and uv
+brew install git node python@3.12 gh uv
+
+# 4. Verify every tool. Each command must print a version.
+git --version
+node --version
+npm --version
+python3 --version
+uv --version
+gh --version
+
+# 5. Install Claude Code. Do not add sudo.
+npm install -g @anthropic-ai/claude-code
+claude --version
+claude doctor
+
+# 6. Start Claude Code and finish browser sign-in
+claude
+
+# After sign-in, type /exit INSIDE Claude Code; do not paste /exit into Terminal.`,
+2:`# Run in Terminal
+mkdir -p "$HOME/.claude/skills"
+
+# Install or update Appian's official development skills
+if [ -d "$HOME/.claude/skills/appian/.git" ]; then
+  git -C "$HOME/.claude/skills/appian" pull --ff-only
+else
+  git clone https://github.com/appian/dev-mcp-skills.git "$HOME/.claude/skills/appian"
+fi
+
+# Make the nested Appian skill directly discoverable by Claude Code
+if [ ! -e "$HOME/.claude/skills/appian-dev" ]; then
+  ln -s "$HOME/.claude/skills/appian/skills/appian" "$HOME/.claude/skills/appian-dev"
+fi
+
+# Download the visual translation skill
+mkdir -p "$HOME/.claude/skills/figma-react-to-appian-sail"
+curl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/SKILL.md" \
+  -o "$HOME/.claude/skills/figma-react-to-appian-sail/SKILL.md"
+
+# Verify both installations
+test -f "$HOME/.claude/skills/appian-dev/SKILL.md" && echo "Appian skill installed"
+test -f "$HOME/.claude/skills/figma-react-to-appian-sail/SKILL.md" && echo "Translation skill installed"
+
+# Restart Claude Code after this step.`,
+4:`# Replace both values before running
+PROJECT_NAME="my-appian-demo"
+GITHUB_REPOSITORY="OWNER/FIGMA-MAKE-REPOSITORY"
+
+# Authenticate using the browser
+gh auth login
+# Choose GitHub.com → HTTPS → Yes → Login with a web browser
+gh auth status
+
+# Create the parent workspace and evidence folders
+mkdir -p "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"
+cd "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"
+git init
+mkdir -p Plans SAIL-Interfaces screenshots/source screenshots/appian assets/demo-documents
+
+# Clone the Figma Make repository into the required child folder
+gh repo clone "$GITHUB_REPOSITORY" figma-source
+git -C figma-source status
+
+# Download persistent project instructions
+curl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/CLAUDE.template.md" -o CLAUDE.md
+open -a TextEdit CLAUDE.md
+
+# Replace every [BRACKETED VALUE] in CLAUDE.md, save it, then verify
+pwd
+ls -la
+ls -la figma-source`,
+5:`# Run in Terminal after replacing <PROJECT_NAME>
+cd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"
+claude
+
+# Inside Claude Code:
+# 1. Type /appian-dev
+# 2. Copy the "Claude Code prompt" immediately below into Claude Code.
+# 3. Complete official authentication when asked.
+# 4. When told approval is pending, type /exit inside Claude Code.
+
+# Back in Terminal, confirm the project configuration exists
+ls -la .mcp.json
+
+# Restart from this same folder and approve only the appian server
+claude
+
+# Inside the fresh Claude Code session:
+# 1. Type /mcp and confirm appian is Connected.
+# 2. Type /appian-dev.
+# 3. Ask for a read-only listApplications test.`,
+6:`# TERMINAL WINDOW 1 — run the source
+cd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>/figma-source"
+ls -la
+
+# If package-lock.json exists
+npm install
+npm run build
+npm run dev
+
+# Leave this window running and open the Local URL printed by the app.
+
+# TERMINAL WINDOW 2 — start Claude from the parent workspace
+cd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"
+claude
+
+# Inside Claude Code:
+# 1. Type /appian-dev
+# 2. Type /figma-react-to-appian-sail ./figma-source
+# 3. Paste the "Claude Code prompt" shown in this stage.`
+},
+windows:{
+1:`# Run these commands in Windows PowerShell as your normal user.
+
+# 1. Install Git for Windows, Node.js LTS, Python 3.12, and GitHub CLI
+winget install --id Git.Git -e --source winget
+winget install --id OpenJS.NodeJS.LTS -e --source winget
+winget install --id Python.Python.3.12 -e --source winget
+winget install --id GitHub.cli -e --source winget
+
+# 2. Install uv using its official Windows installer
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 3. Close PowerShell completely, reopen it, then verify every tool
+git --version
+node --version
+npm --version
+python --version
+uv --version
+gh --version
+
+# 4. Tell Claude Code where Git Bash is installed
+[Environment]::SetEnvironmentVariable(
+  "CLAUDE_CODE_GIT_BASH_PATH",
+  "C:\\Program Files\\Git\\bin\\bash.exe",
+  "User"
+)
+$env:CLAUDE_CODE_GIT_BASH_PATH="C:\\Program Files\\Git\\bin\\bash.exe"
+
+# 5. Install and diagnose Claude Code
+npm install -g @anthropic-ai/claude-code
+claude --version
+claude doctor
+
+# 6. Start Claude Code and finish browser sign-in
+claude
+
+# After sign-in, type /exit INSIDE Claude Code.`,
+2:`# Run in Windows PowerShell
+$SkillsRoot = Join-Path $HOME ".claude\\skills"
+$AppianRepo = Join-Path $SkillsRoot "appian"
+$AppianDirect = Join-Path $SkillsRoot "appian-dev"
+$Translation = Join-Path $SkillsRoot "figma-react-to-appian-sail"
+New-Item -ItemType Directory -Force -Path $SkillsRoot | Out-Null
+
+# Install or update Appian's official development skills
+if (Test-Path (Join-Path $AppianRepo ".git")) {
+  git -C $AppianRepo pull --ff-only
+} else {
+  git clone https://github.com/appian/dev-mcp-skills.git $AppianRepo
+}
+
+# Copy the directly discoverable Appian skill (no administrator symlink required)
+if (Test-Path $AppianDirect) { Remove-Item $AppianDirect -Recurse -Force }
+Copy-Item (Join-Path $AppianRepo "skills\\appian") $AppianDirect -Recurse
+
+# Download the visual translation skill
+New-Item -ItemType Directory -Force -Path $Translation | Out-Null
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/SKILL.md" -OutFile (Join-Path $Translation "SKILL.md")
+
+# Verify both files
+Test-Path (Join-Path $AppianDirect "SKILL.md")
+Test-Path (Join-Path $Translation "SKILL.md")
+
+# Both results must be True. Restart Claude Code after this step.`,
+4:`# Run in Windows PowerShell; replace both values first
+$ProjectName = "my-appian-demo"
+$GitHubRepository = "OWNER/FIGMA-MAKE-REPOSITORY"
+$Workspace = Join-Path $HOME "Documents\\appian-claude-projects\\$ProjectName"
+
+# Authenticate using the browser
+gh auth login
+# Choose GitHub.com → HTTPS → Yes → Login with a web browser
+gh auth status
+
+# Create the workspace and evidence folders
+New-Item -ItemType Directory -Force -Path $Workspace | Out-Null
+Set-Location $Workspace
+git init
+"Plans","SAIL-Interfaces","screenshots\\source","screenshots\\appian","assets\\demo-documents" |
+  ForEach-Object { New-Item -ItemType Directory -Force -Path $_ | Out-Null }
+
+# Clone the Figma Make source
+gh repo clone $GitHubRepository figma-source
+git -C figma-source status
+
+# Download and open persistent project instructions
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/CLAUDE.template.md" -OutFile "CLAUDE.md"
+notepad CLAUDE.md
+
+# Replace every [BRACKETED VALUE], save, then verify
+Get-Location
+Get-ChildItem -Force
+Get-ChildItem figma-source`,
+5:`# Run in Windows PowerShell after replacing <PROJECT_NAME>
+Set-Location "$HOME\\Documents\\appian-claude-projects\\<PROJECT_NAME>"
+claude
+
+# Inside Claude Code:
+# 1. Type /appian-dev
+# 2. Paste the "Claude Code prompt" immediately below.
+# 3. Complete official authentication.
+# 4. When approval is pending, type /exit inside Claude Code.
+
+# Back in PowerShell, confirm the configuration
+Get-ChildItem -Force .mcp.json
+
+# Restart from the same folder and approve only appian
+claude
+
+# In the fresh session, run /mcp, then /appian-dev,
+# then request the read-only listApplications test.`,
+6:`# POWERSHELL WINDOW 1 — run the source
+Set-Location "$HOME\\Documents\\appian-claude-projects\\<PROJECT_NAME>\\figma-source"
+Get-ChildItem
+
+# If package-lock.json exists
+npm install
+npm run build
+npm run dev
+
+# Leave this window running and open the Local URL it prints.
+
+# POWERSHELL WINDOW 2 — start Claude from the parent
+Set-Location "$HOME\\Documents\\appian-claude-projects\\<PROJECT_NAME>"
+claude
+
+# Inside Claude Code:
+# 1. Type /appian-dev
+# 2. Type /figma-react-to-appian-sail ./figma-source
+# 3. Paste the "Claude Code prompt" shown in this stage.`
+},
+linux:{
+1:`# These commands target Ubuntu/Debian Linux. Run in a terminal.
+
+# 1. Update packages and install the base tools
+sudo apt update
+sudo apt install -y git curl ca-certificates build-essential python3 python3-pip
+
+# 2. Install Node.js LTS using NodeSource
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# 3. Install GitHub CLI from GitHub's official apt repository
+(type -p wget >/dev/null || sudo apt install wget -y) \
+  && sudo mkdir -p -m 755 /etc/apt/keyrings \
+  && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+  | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg >/dev/null \
+  && sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+  | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null \
+  && sudo apt update \
+  && sudo apt install gh -y
+
+# 4. Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source "$HOME/.local/bin/env" 2>/dev/null || true
+
+# 5. Verify every tool
+git --version
+node --version
+npm --version
+python3 --version
+uv --version
+gh --version
+
+# 6. Install Claude Code. Do not use sudo.
+npm install -g @anthropic-ai/claude-code
+claude --version
+claude doctor
+claude
+
+# After browser sign-in, type /exit INSIDE Claude Code.`,
+2:`# Run in a Linux terminal
+mkdir -p "$HOME/.claude/skills"
+
+if [ -d "$HOME/.claude/skills/appian/.git" ]; then
+  git -C "$HOME/.claude/skills/appian" pull --ff-only
+else
+  git clone https://github.com/appian/dev-mcp-skills.git "$HOME/.claude/skills/appian"
+fi
+
+if [ ! -e "$HOME/.claude/skills/appian-dev" ]; then
+  ln -s "$HOME/.claude/skills/appian/skills/appian" "$HOME/.claude/skills/appian-dev"
+fi
+
+mkdir -p "$HOME/.claude/skills/figma-react-to-appian-sail"
+curl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/SKILL.md" \
+  -o "$HOME/.claude/skills/figma-react-to-appian-sail/SKILL.md"
+
+test -f "$HOME/.claude/skills/appian-dev/SKILL.md" && echo "Appian skill installed"
+test -f "$HOME/.claude/skills/figma-react-to-appian-sail/SKILL.md" && echo "Translation skill installed"
+
+# Restart Claude Code after this step.`,
+4:`# Replace both values before running
+PROJECT_NAME="my-appian-demo"
+GITHUB_REPOSITORY="OWNER/FIGMA-MAKE-REPOSITORY"
+
+gh auth login
+# Choose GitHub.com → HTTPS → Yes → Login with a web browser
+gh auth status
+
+mkdir -p "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"
+cd "$HOME/Documents/appian-claude-projects/$PROJECT_NAME"
+git init
+mkdir -p Plans SAIL-Interfaces screenshots/source screenshots/appian assets/demo-documents
+
+gh repo clone "$GITHUB_REPOSITORY" figma-source
+git -C figma-source status
+
+curl -fL "https://raw.githubusercontent.com/yousseffranci-appian/figma-to-appian/main/CLAUDE.template.md" -o CLAUDE.md
+
+# Open CLAUDE.md with your installed editor, for example:
+nano CLAUDE.md
+# Replace every [BRACKETED VALUE], then save with Ctrl+O, Enter, Ctrl+X.
+
+pwd
+ls -la
+ls -la figma-source`,
+5:`# Run in a Linux terminal after replacing <PROJECT_NAME>
+cd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"
+claude
+
+# Inside Claude Code:
+# 1. Type /appian-dev
+# 2. Paste the "Claude Code prompt" immediately below.
+# 3. Complete official authentication.
+# 4. When approval is pending, type /exit inside Claude Code.
+
+# Back in the terminal
+ls -la .mcp.json
+claude
+
+# In the fresh session, run /mcp, then /appian-dev,
+# then request the read-only listApplications test.`,
+6:`# TERMINAL WINDOW 1 — run the source
+cd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>/figma-source"
+ls -la
+
+# If package-lock.json exists
+npm install
+npm run build
+npm run dev
+
+# Leave this window running and open the Local URL it prints.
+
+# TERMINAL WINDOW 2 — start Claude from the parent
+cd "$HOME/Documents/appian-claude-projects/<PROJECT_NAME>"
+claude
+
+# Inside Claude Code:
+# 1. Type /appian-dev
+# 2. Type /figma-react-to-appian-sail ./figma-source
+# 3. Paste the "Claude Code prompt" shown in this stage.`
+}
+};
+const stagePrompts={5:prompts.setup,6:prompts.inspect,7:prompts.plan,8:prompts.build,9:prompts.test};
 const faqs=[["Can Figma Make push to an existing repository?","No. Figma Make creates and owns the repository connected to that Make file. Each Make file has its own repository."],["Is the Figma Make GitHub connection two-way?","No. It is a one-way push from Figma Make to the repository’s default branch. GitHub edits do not return to Make and may be overwritten by the next Make push."],["GitHub rejects my password","Run gh auth login, choose GitHub.com, HTTPS, and browser authentication. Then clone with gh repo clone."],["Appian MCP says Pending approval","Exit Claude, confirm .mcp.json is in the parent workspace, relaunch from that exact folder, approve appian, and check /mcp."],["Appian tools are missing","Load /appian-dev, check /mcp, and restart after approval. Ask Claude to inspect the tool surface rather than guessing names."],["The React app will not start","Read package.json and use the package manager matching its lockfile. Usually npm install and npm run dev."],["The Appian UI looks generic","Return to the measured visual plan. Require same-viewport screenshots and composed SAIL primitives instead of generic substitutions."],["A process model appears broken","Stop broad edits. Inspect dependencies, change one bounded path, validate immediately, and do not continue after suspected corruption."],["Should I approve “don’t ask again”?","Use it for narrow repeated reads/validation. Keep one-time approval for deletes, security, resets, overwrites, credentials, and cross-app changes."]];
-const stageEl=document.querySelector("#stages"),nav=document.querySelector("#stageNav");stages.forEach((s,i)=>{let id=`stage-${i}`,details=stageDetails[i].map((x,j)=>`<div class="instruction"><span>${j+1}</span><div><h4>${x[0]}</h4><p>${x[1]}</p></div></div>`).join(""),action=i===0?`<a class="gem-action" href="https://gemini.google.com/gem/16fDdWJ4XNR4hAhKOK5X4A7Fa_QyXvX5q?usp=sharing" target="_blank" rel="noreferrer"><span>✦</span><div><small>SHARED GEMINI GEM</small><strong>Open the Figma Make Brief Generator</strong><p>Launch the ready-made Gem, add your discovery materials, and generate the brief.</p></div><b>Open Gem ↗</b></a>`:`<div class="code"><button class="copy">Copy</button><pre>${s[3]}</pre></div>`;nav.insertAdjacentHTML("beforeend",`<button data-id="${id}">${String(i+1).padStart(2,"0")} · ${s[0]}</button>`);stageEl.insertAdjacentHTML("beforeend",`<article class="stage-card" id="${id}"><small>STAGE ${String(i+1).padStart(2,"0")}</small><h3>${s[0]}</h3><p class="stage-intro">${s[1]}</p><div class="instructions">${details}</div><h4 class="completion-title">Completion checklist</h4><div class="checklist">${s[2].map((x,j)=>`<label class="check"><input type="checkbox" data-key="${i}-${j}"><span>${x}</span></label>`).join("")}</div>${action}</article>`)});let saved=JSON.parse(localStorage.getItem("fta-progress")||"{}");document.querySelectorAll(".check input").forEach(x=>{x.checked=!!saved[x.dataset.key];x.onchange=progress});function progress(){let a=[...document.querySelectorAll(".check input")],d=a.filter(x=>x.checked).length;document.querySelector("#progressValue").textContent=Math.round(d/a.length*100)+"%";localStorage.setItem("fta-progress",JSON.stringify(Object.fromEntries(a.map(x=>[x.dataset.key,x.checked]))))}progress();document.querySelector("#reset").onclick=()=>{document.querySelectorAll(".check input").forEach(x=>x.checked=false);progress()};nav.querySelectorAll("button").forEach(b=>b.onclick=()=>document.querySelector("#"+b.dataset.id).scrollIntoView());const stageObserver=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)nav.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.id===e.target.id))}),{rootMargin:"-30% 0px -60%"});document.querySelectorAll(".stage-card").forEach(card=>stageObserver.observe(card));
-function wire(){document.querySelectorAll(".copy").forEach(b=>b.onclick=async()=>{await navigator.clipboard.writeText(b.parentElement.querySelector("pre").innerText);let t=document.querySelector("#toast");t.classList.add("show");setTimeout(()=>t.classList.remove("show"),1400)})}function show(k){document.querySelector("#promptPanel").innerHTML=`<div class="code"><button class="copy">Copy prompt</button><pre>${prompts[k]}</pre></div>`;wire()}document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active");show(b.dataset.tab)});show("setup");wire();let faq=document.querySelector("#faq");faqs.forEach(([q,a])=>faq.insertAdjacentHTML("beforeend",`<div class="faq-item"><button class="faq-q">${q}<span>＋</span></button><div class="faq-a">${a}</div></div>`));faq.querySelectorAll(".faq-q").forEach(b=>b.onclick=()=>b.parentElement.classList.toggle("open"));
+const stageEl=document.querySelector("#stages"),nav=document.querySelector("#stageNav");
+const escapeHtml=value=>value.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+let selectedOs=localStorage.getItem("fta-os")||"mac";
+
+function codeBlock(content,label,kind="command"){
+  return `<div class="embedded-block"><div class="block-label">${label}</div><div class="code ${kind}"><button class="copy">${kind==="prompt"?"Copy prompt":"Copy commands"}</button><pre>${escapeHtml(content)}</pre></div></div>`;
+}
+function stageAction(index){
+  if(index===0)return `<a class="gem-action" href="https://gemini.google.com/gem/16fDdWJ4XNR4hAhKOK5X4A7Fa_QyXvX5q?usp=sharing" target="_blank" rel="noreferrer"><span>✦</span><div><small>SHARED GEMINI GEM</small><strong>Open the Figma Make Brief Generator</strong><p>Launch the ready-made Gem, add your discovery materials, and generate the brief.</p></div><b>Open Gem ↗</b></a>`;
+  let output="",command=osCommands[selectedOs]?.[index];
+  if(command)output+=codeBlock(command,`${selectedOs==="mac"?"macOS":selectedOs==="windows"?"Windows PowerShell":"Linux"} commands`);
+  else if(!stagePrompts[index]&&stages[index][3])output+=codeBlock(stages[index][3],"Information to collect");
+  if(stagePrompts[index])output+=codeBlock(stagePrompts[index],"Claude Code prompt","prompt");
+  return output;
+}
+function renderStages(){
+  stageEl.innerHTML="";
+  nav.innerHTML="";
+  stages.forEach((s,i)=>{
+    let id=`stage-${i}`;
+    let details=stageDetails[i].map((x,j)=>`<div class="instruction"><span>${j+1}</span><div><h4>${x[0]}</h4><p>${x[1]}</p></div></div>`).join("");
+    nav.insertAdjacentHTML("beforeend",`<button data-id="${id}">${String(i+1).padStart(2,"0")} · ${s[0]}</button>`);
+    stageEl.insertAdjacentHTML("beforeend",`<article class="stage-card" id="${id}"><small>STAGE ${String(i+1).padStart(2,"0")}</small><h3>${s[0]}</h3><p class="stage-intro">${s[1]}</p><div class="instructions">${details}</div><h4 class="completion-title">Completion checklist</h4><div class="checklist">${s[2].map((x,j)=>`<label class="check"><input type="checkbox" data-key="${i}-${j}"><span>${x}</span></label>`).join("")}</div>${stageAction(i)}</article>`);
+  });
+  restoreProgress();
+  wireCopy();
+  wireNav();
+}
+function restoreProgress(){
+  let saved=JSON.parse(localStorage.getItem("fta-progress")||"{}");
+  document.querySelectorAll(".check input").forEach(x=>{x.checked=!!saved[x.dataset.key];x.onchange=progress});
+  progress();
+}
+function progress(){
+  let all=[...document.querySelectorAll(".check input")],done=all.filter(x=>x.checked).length;
+  document.querySelector("#progressValue").textContent=(all.length?Math.round(done/all.length*100):0)+"%";
+  localStorage.setItem("fta-progress",JSON.stringify(Object.fromEntries(all.map(x=>[x.dataset.key,x.checked]))));
+}
+function wireCopy(){
+  document.querySelectorAll(".copy").forEach(button=>button.onclick=async()=>{
+    await navigator.clipboard.writeText(button.parentElement.querySelector("pre").innerText);
+    let toast=document.querySelector("#toast");
+    toast.classList.add("show");
+    setTimeout(()=>toast.classList.remove("show"),1400);
+  });
+}
+function wireNav(){
+  nav.querySelectorAll("button").forEach(button=>button.onclick=()=>document.querySelector("#"+button.dataset.id).scrollIntoView());
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    if(entry.isIntersecting)nav.querySelectorAll("button").forEach(button=>button.classList.toggle("active",button.dataset.id===entry.target.id));
+  }),{rootMargin:"-30% 0px -60%"});
+  document.querySelectorAll(".stage-card").forEach(card=>observer.observe(card));
+}
+document.querySelectorAll(".system-toggle button").forEach(button=>{
+  button.classList.toggle("active",button.dataset.os===selectedOs);
+  button.onclick=()=>{
+    selectedOs=button.dataset.os;
+    localStorage.setItem("fta-os",selectedOs);
+    document.querySelectorAll(".system-toggle button").forEach(item=>item.classList.toggle("active",item===button));
+    renderStages();
+  };
+});
+renderStages();
+document.querySelector("#reset").onclick=()=>{document.querySelectorAll(".check input").forEach(x=>x.checked=false);progress()};
+let faq=document.querySelector("#faq");
+faqs.forEach(([q,a])=>faq.insertAdjacentHTML("beforeend",`<div class="faq-item"><button class="faq-q">${q}<span>＋</span></button><div class="faq-a">${a}</div></div>`));
+faq.querySelectorAll(".faq-q").forEach(button=>button.onclick=()=>button.parentElement.classList.toggle("open"));

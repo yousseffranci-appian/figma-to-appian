@@ -5,7 +5,9 @@ An interactive, beginner-friendly guide for translating a Figma Make/React appli
 ## Included
 
 - Ten-stage workflow from discovery through final testing, with saved progress
-- Copyable commands and Claude Code prompts
+- A saved macOS, Windows, and Linux selector with platform-specific commands
+- Claude Code prompts embedded directly into the stage where each is used
+- Subscription prerequisites and direct sign-up/approval links
 - Troubleshooting guide
 - Downloadable translation skill and direct access to the shared Gemini Gem
 - Direct link to the shared Figma Make Brief Generator Gem and a downloadable `CLAUDE.md` project template
